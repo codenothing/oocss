@@ -1,6 +1,6 @@
 /**
- * Object Oriented CSS 2.0
- * September 5, 2009
+ * Object Oriented CSS [VERSION]
+ * [DATE]
  * Corey Hart @ http://www.codenothing.com
  */ 
 
@@ -17,7 +17,7 @@ $links = {
 $code_wrapper = {
 	display: block,
 	border: 1px dashed #595959,
-	height: 200px,
+	height: 250px,
 	background-color: #f1f1f1,
 	overflow: auto,
 	width: 500px,
@@ -33,7 +33,7 @@ body {
 	padding: 0;
 }
 
-pre {
+pre, iframe {
 	$code_wrapper;
 	margin-left: 15px;
 }
@@ -69,7 +69,7 @@ table {
 
 	/* Descendents */
 	pre { $code_wrapper; }
-	iframe { $code_wrapper; }
+	iframe {margin-left: 0;}
 	td {
 		> a { $links; }
 	}

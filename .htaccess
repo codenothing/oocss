@@ -1,6 +1,3 @@
-# Compress All PHP Output
-php_value output_handler ob_gzhandler
-
 # Mod Rewrites
 RewriteEngine on
 

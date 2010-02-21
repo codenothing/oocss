@@ -1,7 +1,7 @@
 <?
 /**
- * Object Oriented CSS 2.0
- * September 5, 2009
+ * Object Oriented CSS [VERSION]
+ * [DATE]
  * Corey Hart @ http://www.codenothing.com
  *
  * Credit to Thiemo Mättig @ http://maettig.com/ for his regex help
@@ -17,16 +17,35 @@ Class ObjectOrientedCSS
 	 * @param (string) file: Contents of css file
 	 * @param (array) tree: Holds parsed tree found in css file
 	 */ 
-	var $vars = array();
-	var $file = '';
-	var $tree = array();
+	private $vars = array();
+	private $tree = array();
+	private $file = '';
+
+	/**
+	 * Constructer will automatically parse any string
+	 * passed into it. To retrieve it, call __get('file').
+	 *
+	 * @param (string) css: Contents of css file
+	 */ 
+	public function __construct($css){
+		if (is_string($css) && strlen($css) > 0)
+			$this->run($css);
+	}
+
+	// Allow access to all vars
+	public function __get($name){
+		return isset($this->$name) ? $this->$name : FALSE;
+	}
+
+	// Disallow changing class vars
+	private function __set($name, $value){}
 
 	/**
 	 * Centralized function to run the OOCSS Parser
 	 *
 	 * @param (string) css: Contents of css file
 	 */ 
-	function run($css){
+	public function run($css){
 		// Store contents into class var
 		$this->file = $css;
 
@@ -48,15 +67,14 @@ Class ObjectOrientedCSS
 	}
 
 	/**
-	 * Format the css file into single line
+	 * Trim the css file into single line and remove comments
 	 *
 	 * @params none
 	 */ 
-	function trimCSS(){
-		// Remove CSS Comments
-		$this->file = preg_replace("/\/\*(.*?)\*\//s", '', $this->file);
-		// Remove Multiple Spaces (Credit goes to Thiemo Mättig @ http://maettig.com/ for pointing out this regex)
-		$this->file = preg_replace("/\s+/s", ' ', $this->file);
+	private function trimCSS(){
+		$search = array("/\/\*(.*?)\*\//s", "/\s+/s");
+		$replace = array('', ' ');
+		$this->file = preg_replace($search, $replace, $this->file);
 	}
 
 	/**
@@ -64,8 +82,8 @@ Class ObjectOrientedCSS
 	 *
 	 * @params none
 	 */ 
-	function variableReplacement(){
-		// Credit goes to Thiemo Mättig @ http://maettig.com/ for pointing out this regex
+	private function variableReplacement(){
+		// Only variables use the '=' sign
 		preg_match_all("/([$]\w+)\s*=\s*([^;]+);/s", $this->file, $matches);
 		for ($i=0, $imax=count($matches[0]); $i<$imax; $i++){
 			// Matches
@@ -75,9 +93,9 @@ Class ObjectOrientedCSS
 
 			// Check for multiple definitions
 			if (strpos($value, '{') !== false){
-				$value = str_replace('{', '', $value);
-				$value = str_replace('}', '', $value);
-				$value = str_replace(',', ';', $value);
+				$search = array('{', '}', ',');
+				$replace = array('', '', ';');
+				$value = str_replace($search, $replace, $value);
 			}
 
 			// Store the var for debugging
@@ -97,7 +115,7 @@ Class ObjectOrientedCSS
 	 *
 	 * @params none
 	 */ 
-	function prepFileForLoop(){
+	private function prepFileForLoop(){
 		// Line out as much as possible
 		$this->file = preg_replace("/([{]|[}]|;)/", "$1\n", $this->file);
 
@@ -111,7 +129,7 @@ Class ObjectOrientedCSS
 	 *
 	 * @param (array) file: Reformated css contents
 	 */ 
-	function convertLoop(&$file){
+	private function convertLoop(&$file){
 		$ret = $old = array();
 		while ($file){
 			$line = trim(array_shift($file));
@@ -124,14 +142,14 @@ Class ObjectOrientedCSS
 
 				// Store old tag for merging
 				if (isset($ret[$tag]))
-					$old = $ret;
+					$old[$tag] = $ret[$tag];
 
 				// Run recursive loop of all levels
 				$ret[$tag] = $this->convertLoop($file);
 
 				// If old tag found, merge results
 				if ($old){
-					$ret = array_merge_recursive($old, $ret);
+					$ret[$tag] = array_merge_recursive($old[$tag], $ret[$tag]);
 					$old = array();
 				}
 			}
@@ -151,7 +169,7 @@ Class ObjectOrientedCSS
 	 * @param (array) file: Tree parsed from contents
 	 * @param (string) tag: Current tag depth
 	 */ 
-	function processFile($file, $tag=''){
+	private function processFile($file, $tag=''){
 		// Only add props if it exists with a tag
 		if (($tag = trim($tag)) && $tag != '' && $file['props']){
 			// Remove Lingering direct descendent tag and trim it
@@ -169,5 +187,4 @@ Class ObjectOrientedCSS
 	}
 };
 
-$oocss = new ObjectOrientedCSS;
 ?>
