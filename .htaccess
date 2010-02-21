@@ -1,0 +1,8 @@
+# Compress All PHP Output
+php_value output_handler ob_gzhandler
+
+# Mod Rewrites
+RewriteEngine on
+
+# Send all oocss files to control center (server specific location)
+RewriteRUle ^(.*?).oocss$ control.php
