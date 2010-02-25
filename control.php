@@ -96,16 +96,16 @@ Class OOCSScontrol
 		// Get and run parser
 		require(OOCSS_PARSER);
 		$oocss = new ObjectOrientedCSS( file_get_contents($this->file_path) );
-		$file = $oocss->__get('file');
+		$file = $oocss->file;
 
 		// Add commented out notes in debug mode
 		if (OOCSS_DEBUG_MODE){
 			// Prepend debug string to file
 			$file = "/*******\nOOCSS DEBUGGING TREES"
 				."\n\nVariables Stored: "
-				.print_r($oocss->__get('vars'), true)
+				.print_r($oocss->vars, true)
 				."\n\nTree Parsed: "
-				.print_r($oocss->__get('tree'), true)
+				.print_r($oocss->tree, true)
 				."******/\n\n\n"
 				.$file;
 		}

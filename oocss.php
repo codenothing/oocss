@@ -23,7 +23,7 @@ Class ObjectOrientedCSS
 
 	/**
 	 * Constructer will automatically parse any string
-	 * passed into it. To retrieve it, call __get('file').
+	 * passed into it and stored on the file variable
 	 *
 	 * @param (string) css: Contents of css file
 	 */ 
@@ -32,9 +32,9 @@ Class ObjectOrientedCSS
 			$this->run($css);
 	}
 
-	// Allow access to all vars
+	// Setup access limiter, even though full access is granted
 	public function __get($name){
-		return isset($this->$name) ? $this->$name : FALSE;
+		return ($name === 'vars' || $name === 'tree' || $name === 'file') ? $this->$name : FALSE;
 	}
 
 	// Disallow changing class vars
