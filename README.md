@@ -14,4 +14,4 @@ Credits
 --------
 [Corey Hart](http://www.codenothing.com) - Creator
 
-[Thiemo Mättig](http://maettig.com/) White space regex
+[Thiemo Mättig](http://maettig.com/) - White space regex help
